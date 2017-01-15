@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<!--<a ui-sref="home">首页</a>-->
+<!--<a ui-sref="user">用户页</a>-->
+<!--<a ui-sref="contact">联系页</a>-->
+
+<ul class="nav nav-tabs" role="tablist" ng-init="flag='home'">
+    <li role="presentation" ng-class="{'active':flag=='home'}" ng-click="flag='home'"><a ui-sref="home">Home</a></li>
+    <li role="presentation" ng-class="{'active':flag=='user'}" ng-click="flag='user'"><a ui-sref="user">User</a></li>
+    <li role="presentation" ng-class="{'active':flag=='contact'}" ng-click="flag='contact'"><a ui-sref="contact">Contact</a></li>
+</ul>
+<ui-view></ui-view>
+</body>
+</html>
+<script src="jquery-3.1.1.min.js"></script>
+<script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../node_modules/angular/angular.js"></script>
+<script src="../node_modules/angular-ui-router/release/angular-ui-router.js"></script>
+<script>
+    var app=angular.module("myApp",["ui.router"]);
+    app.config(function($stateProvider,$urlRouterProvider) {
+        $stateProvider.state("home", {//home相当于路由名字
+            url: "/home",//路由的路径
+            templateUrl: "./ui-route/home.html",
+            controller: function ($scope) {
+                $scope.title = "这是首页标题";
+            }
+        }).state("user", {//home相当于路由名字
+            url: "/user",//路由的路径
+            templateUrl: "./ui-route/user1.html",
+            controller: function ($scope) {
+                $scope.title = "这是用户页标题";
+                $scope.content = {
+                    name:"shuai",
+                    age:25,
+                    sex:"male",
+                    score:98
+                };
+            }
+        }).state("contact", {//home相当于路由名字
+            url: "/contact",//路由的路径
+            templateUrl: "./ui-route/contact.html",
+            controller: function ($scope) {
+                $scope.title = "这是联系页标题"
+            }
+        });
+        $urlRouterProvider.otherwise("home");
+    });
+
+
+    app.run(function($rootScope,$state){
+        $rootScope.$on('$rootChangeStart',function(event,toState,toParams,fromState,fromParams){
+            console.log(event);
+            console.log(toState);
+            console.log(toParams);
+            console.log(fromState);
+            console.log(fromParams);
+
+            if(toState.name=="/contact"){
+                $state.go("home");
+                event.preventDefault();
+            }
+
+    //        if(toState.$$route.originalPath=="/setting"){//可以重定向
+    //            $location.path("/home");
+    //        }
+        });
+    })
+</script>
